@@ -1,9 +1,9 @@
 import server from "./server";
 
-function Wallet({ address, setAddress, balance, setBalance }) {
+function Wallet({ balance, setBalance, setSignature, signature}) {
   async function onChange(evt) {
     const address = evt.target.value;
-    setAddress(address);
+    setSignature(signature);
     if (address) {
       const {
         data: { balance },

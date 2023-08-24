@@ -1,3 +1,7 @@
+const {secp} = require("ethereum-cryptography/secp256k1");
+const {utils} = require("ethereum-cryptography/utils");
+const { sha } = require("ethereum-cryptography/sha256");
+
 const express = require("express");
 const app = express();
 const cors = require("cors");
@@ -7,9 +11,9 @@ app.use(cors());
 app.use(express.json());
 
 const balances = {
-  "0x1": 100,
-  "0x2": 50,
-  "0x3": 75,
+  "03ad197e2ab531d1a91caefda8b32bad08d7c9a04b4aa780c4f7d5623dc15df703": 100,
+  "028cae7d377febc7c62963ea0998e02c01e5406764d678628dd0aecfe4c3cf56d7": 50,
+  "02bc1bda07bc538f02bc38e64994de3ffc9dc08027907f81e1b42bd8d12dd1fb35": 75,
 };
 
 app.get("/balance/:address", (req, res) => {
@@ -19,7 +23,28 @@ app.get("/balance/:address", (req, res) => {
 });
 
 app.post("/send", (req, res) => {
-  const { sender, recipient, amount } = req.body;
+  const { strTransaction, transactionHash, signature } = req.body;
+  let transaction = JSON.parse(strTransaction);
+
+  console.log("Transaction: "+ transaction);
+
+  const computedHash = sha.sha256(utils.utf8ToBytes(strTransaction));
+
+  console.log("Comp Hash: " + computedHash);
+
+  if(computedHash.toString() !== transactionHash.toString()){
+    res.status(403).send({message: "Hashes are different."});
+  }
+  
+  const sender = transaction.sender;
+  const recipient = transaction.recipient;
+  const amount = transaction.amount;
+
+  const isSigned = secp.secp256k1.verify(signature, computedHash, sender);
+
+  if(!isSigned){
+    res.status(403).send({message: "Transaction not accepted. Invalid credentials."});
+  }
 
   setInitialBalance(sender);
   setInitialBalance(recipient);

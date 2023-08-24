@@ -20,15 +20,16 @@ const addr3 = toHex(pk3Hash.slice(pk3Hash.length - 20));
 
 console.log("Priv Key 1: " + toHex(privKey1));
 console.log("Pub Key 1: " + toHex(pubKey1));
-console.log("pkHash 1: " + pk1Hash);
+console.log("pkHash 1: " + toHex(pk1Hash));
 console.log("Addr1: " + addr1);
 
 console.log("Priv Key 2: " + toHex(privKey2));
 console.log("Pub Key 2: " + toHex(pubKey2));
-console.log("pkHash 2: " + pk2Hash);
+console.log("pkHash 2: " + toHex(pk2Hash));
 console.log("Addr2: " + addr2);
 
 console.log("Priv Key 3: " + toHex(privKey3));
 console.log("Pub Key 3: " + toHex(pubKey3));
-console.log("pkHash 3: " + pk3Hash);
+console.log("pkHash 3: " + toHex(pk3Hash));
 console.log("Addr3: " + addr3);
+

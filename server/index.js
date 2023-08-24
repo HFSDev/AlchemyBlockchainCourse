@@ -1,6 +1,7 @@
-const {secp} = require("ethereum-cryptography/secp256k1");
-const {utils} = require("ethereum-cryptography/utils");
-const { sha } = require("ethereum-cryptography/sha256");
+const utils = require("ethereum-cryptography/utils");
+const secp = require("ethereum-cryptography/secp256k1");
+const sha = require("ethereum-cryptography/sha256");
+
 
 const express = require("express");
 const app = express();
@@ -23,8 +24,10 @@ app.get("/balance/:address", (req, res) => {
 });
 
 app.post("/send", (req, res) => {
-  const { strTransaction, transactionHash, signature } = req.body;
+  const { strTransaction, hashString, sigString } = req.body;
+  console.log("Entrei..." + strTransaction + hashString);
   let transaction = JSON.parse(strTransaction);
+  let signature = sigString;
 
   console.log("Transaction: "+ transaction);
 
@@ -32,7 +35,7 @@ app.post("/send", (req, res) => {
 
   console.log("Comp Hash: " + computedHash);
 
-  if(computedHash.toString() !== transactionHash.toString()){
+  if(computedHash.toString() !== hashString){
     res.status(403).send({message: "Hashes are different."});
   }
   

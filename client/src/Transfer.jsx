@@ -4,6 +4,8 @@ import * as secp from "ethereum-cryptography/secp256k1";
 import * as utils from "ethereum-cryptography/utils";
 import * as sha from "ethereum-cryptography/sha256";
 
+BigInt.prototype.toJSON = function() { return this.toString() };
+
 function Transfer({ address, setBalance }) {
   const [sendAmount, setSendAmount] = useState("");
   const [recipient, setRecipient] = useState("");
@@ -20,7 +22,9 @@ function Transfer({ address, setBalance }) {
     };
     let strTransaction = JSON.stringify(transaction);
     let transactionHash = sha.sha256(utils.utf8ToBytes(strTransaction));
+    let hashString = transactionHash.toString();
     let signature = secp.secp256k1.sign(transactionHash, privKey);
+    let sigString = signature.toCompactHex();
 
     console.log("Transaction Hash: " + transactionHash);
 
@@ -29,8 +33,8 @@ function Transfer({ address, setBalance }) {
         data: { balance },
       } = await server.post(`send`, {
         strTransaction,
-        transactionHash,
-        signature
+        hashString,
+        sigString
       });
       setBalance(balance);
     } catch (ex) {
